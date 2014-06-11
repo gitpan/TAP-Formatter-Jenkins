@@ -13,10 +13,13 @@ my $builder = Module::Build->new(
         'Module::Build' => 0,
     },
     build_requires => {
-        'Test::More'  => 0,
-        'File::Slurp' => 0,
-        'File::Temp'  => 0,
-        'Test::XML'   => 0,
+        'Test::More'                => 0,
+        'Test::Spec'                => 0,
+        'Test::Spec::Mocks'         => 0,
+        'Test::MockObject::Extends' => 0,
+        'TAP::Harness'              => 0,
+        'File::Slurp'               => 0,
+        'File::Temp'                => 0,
     },
     requires => {
         'Moose'            => 2.0000,

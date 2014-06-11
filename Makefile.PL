@@ -12,8 +12,10 @@ WriteMakefile
                    'MooseX::NonMoose' => '0.2',
                    'TAP::Harness' => '3.2',
                    'TAP::Parser::YAMLish::Writer' => 0,
+                   'Test::MockObject::Extends' => 0,
                    'Test::More' => 0,
-                   'Test::XML' => 0
+                   'Test::Spec' => 0,
+                   'Test::Spec::Mocks' => 0
                  },
   'INSTALLDIRS' => 'site',
   'EXE_FILES' => [],

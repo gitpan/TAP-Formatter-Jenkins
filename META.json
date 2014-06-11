@@ -18,8 +18,11 @@
          "requires" : {
             "File::Slurp" : "0",
             "File::Temp" : "0",
+            "TAP::Harness" : "0",
+            "Test::MockObject::Extends" : "0",
             "Test::More" : "0",
-            "Test::XML" : "0"
+            "Test::Spec" : "0",
+            "Test::Spec::Mocks" : "0"
          }
       },
       "configure" : {
@@ -40,7 +43,7 @@
    "provides" : {
       "TAP::Formatter::Jenkins" : {
          "file" : "lib/TAP/Formatter/Jenkins.pm",
-         "version" : "0.01"
+         "version" : "0.02"
       },
       "TAP::Formatter::Jenkins::MyParser" : {
          "file" : "lib/TAP/Formatter/Jenkins/MyParser.pm",
@@ -57,5 +60,5 @@
          "http://dev.perl.org/licenses/"
       ]
    },
-   "version" : "0.01"
+   "version" : "0.02"
 }

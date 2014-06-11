@@ -45,6 +45,7 @@ my $ALLOW_UNKNOWN_STRS      = qr{ $TIME_STAMP  |
                                   $TEST_FAILURE
                                 }ix;
 
+my $SUBTEST_PLAN            = qr{ ^\s+\d+\.\.\d+                                }ix;
 my $NO_PLAN                 = qr{ no\splan\swas\sdeclared                       }ix;
 my $FAILED_PLAN             = qr{ you\splanned\s\d+\stests\sbut\sran\s\d+       }ix;
 my $EXIT_BEFORE_OUTPUT      = qr{ looks\slike\syour\stest\sexited\swith\s\d+\sbefore\sit\scould\soutput\sanything }ix;
@@ -142,6 +143,14 @@ sub is_yamlish_end {
     return $self->{current}
             &&
            $self->as_string =~ /^$YAMLISH_END/ix;
+}
+
+sub is_subtest_plan {
+    my ( $self ) = @_;
+
+    return $self->{current}
+            &&
+           $self->as_string =~ /$SUBTEST_PLAN/ix;
 }
 
 sub like_die {

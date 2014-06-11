@@ -9,12 +9,18 @@ extends qw(
 use TAP::Formatter::Jenkins::Session;
 use Data::Dumper;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 has 'test_suites' => (
     is      => 'rw',
     isa     => 'HashRef',
     default => sub { {} },
+);
+
+has 'passing_todo_ok' => (
+    is      => 'rw',
+    isa     => 'Bool',
+    default => 0,
 );
 
 ###############################################################################
@@ -25,12 +31,15 @@ has 'test_suites' => (
 # Creates a 'TAP::Formatter::Jenkins::Session' session, instead of a console
 # formatter session.
 sub open_test {
-    my ($self, $test, $parser) = @_;
+    my ( $self, $test, $parser ) = @_;
+
+    $self->passing_todo_ok( $ENV{ALLOW_PASSING_TODOS} ? 1 : 0 );
+
     my $session = TAP::Formatter::Jenkins::Session->new( {
         name            => $test,
         formatter       => $self,
         parser          => $parser,
-        passing_todo_ok => $ENV{ALLOW_PASSING_TODOS} ? 1 : 0,
+        passing_todo_ok => $self->passing_todo_ok,
     } );
     return $session;
 }
@@ -98,6 +107,11 @@ which can be used in Jenkins CI server.
 This module is based on TAP::Formatter::JUnit by Graham TerMarsch
 <cpan@howlingfrog.com>, main differences are:
 
+In standard use, "passing TODOs" are treated as failure conditions (and are
+reported as such in the generated TAP).  If you wish to treat these as a
+"pass" and not a "fail" condition, setting C<ALLOW_PASSING_TODOS> in your
+environment will turn these into pass conditions.
+
 =over
 
 =item * resulting TAP is saved in %test_suite_name%.tap instead of putting it to the stdout
@@ -110,7 +124,7 @@ This module is based on TAP::Formatter::JUnit by Graham TerMarsch
 
 =over
 
-=item testsuites
+=item test_suites
 
 List-ref of test suites that have been executed.
 

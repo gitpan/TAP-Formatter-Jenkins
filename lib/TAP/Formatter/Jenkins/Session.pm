@@ -107,6 +107,12 @@ sub close_test {
         elsif ( $result->is_yamlish_start ) {
             $self->add_test_case( $self->_parse_yamlish_dump_from_tap($result) );
         }
+        # Subtest plan
+        elsif ( $result->is_subtest_plan ) {
+            $self->add_test_case( $result->as_string. "\n" );
+
+            $result->next;
+        }
         # Other useless
         elsif ( $result->is_time_test ) {
             $result->next;
@@ -160,10 +166,19 @@ sub _parse_failed_test_case {
     my ( $self, $result ) = @_;
 
     my $yamlish_diag;
-    my $comment;
+    my $comment = '';
 
-    my $res = $result->as_string. "\n";
+    my $test_case = $result->as_string. "\n";
     $result->next;
+
+    if ( $self->passing_todo_ok && $test_case =~ /#\sTODO/ ) {
+        while ( $result->as_string !~ /^(not\s)?ok\s/ ) {
+            $result->next;
+        }
+
+        $test_case =~ s/^not\s//;
+        return $test_case;
+    }
 
     # Empty spaces
     while ( ! $result->as_string ) {
@@ -186,19 +201,13 @@ sub _parse_failed_test_case {
     }
 
     # Merge coment, yamlish
-    $res .= $yamlish_diag
+    $test_case .= $yamlish_diag
           ? $comment. $yamlish_diag
           : $comment && $comment =~ /failed.+test/i
             ? $self->_test_more_comment_to_yamlish( $result, $comment )
             : $comment;
 
-    # TODO
-    # my $t = $result->get_test;
-    # $t =~ tr/\//-/;
-    # $failed_test{ $t. ".t > $subtest_name" } = $res
-    #     unless $subtest_name =~ /# TODO/i;
-
-    return $res;
+    return $test_case;
 }
 
 ###############################################################################
